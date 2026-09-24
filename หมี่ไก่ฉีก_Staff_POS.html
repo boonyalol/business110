@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>หมี่ไก่ฉีก — Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #222535;
+  --surface3: #2a2e42;
+  --border: #2e3248;
+  --accent: #f5a623;
+  --accent2: #e8623a;
+  --green: #3ecf8e;
+  --red: #ef4444;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --text: #e8eaf2;
+  --text2: #8b8fa8;
+  --text3: #545870;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Sarabun', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+
+/* === LAYOUT === */
+#app { display: flex; height: 100vh; overflow: hidden; }
+#sidebar { width: 220px; min-width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
+#main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* === SIDEBAR === */
+.sidebar-logo { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); }
+.sidebar-logo .shop-name { font-weight: 700; font-size: 16px; color: var(--accent); letter-spacing: -0.3px; }
+.sidebar-logo .shop-sub { font-size: 11px; color: var(--text3); margin-top: 1px; font-family: var(--mono); }
+
+.sidebar-user { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--bg); flex-shrink: 0; }
+.user-info .user-name { font-size: 13px; font-weight: 600; }
+.user-info .user-role { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+.nav-section { padding: 10px 0; flex: 1; overflow-y: auto; }
+.nav-label { padding: 4px 16px 2px; font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.5px; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--text2); font-size: 14px; transition: background .15s, color .15s; border-radius: 0; position: relative; }
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--surface2); color: var(--accent); }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: var(--accent); border-radius: 0 3px 3px 0; }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+.sidebar-bottom { padding: 12px 16px; border-top: 1px solid var(--border); }
+.shift-badge { background: var(--surface3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; display: flex; align-items: center; gap: 8px; }
+.shift-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+.shift-info { font-size: 12px; color: var(--text2); }
+.shift-time { font-family: var(--mono); font-size: 11px; color: var(--green); font-weight: 500; }
+
+/* === TOPBAR === */
+#topbar { padding: 14px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); flex-shrink: 0; }
+.page-title { font-size: 18px; font-weight: 700; letter-spacing: -0.4px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* === CONTENT === */
+#content { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* === CARDS === */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.card-title { font-size: 12px; font-weight: 600; color: var(--text3); font-family: var(--mono); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
+
+/* === KPI GRID === */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.kpi-label { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; }
+.kpi-value { font-size: 24px; font-weight: 700; font-family: var(--mono); letter-spacing: -1px; }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+.kpi-value.accent { color: var(--accent); }
+.kpi-value.green { color: var(--green); }
+.kpi-value.red { color: var(--red); }
+.kpi-value.blue { color: var(--blue); }
+
+/* === BUTTONS === */
+.btn { padding: 9px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-family: var(--sans); font-size: 14px; font-weight: 600; transition: opacity .15s, transform .08s; display: inline-flex; align-items: center; gap: 6px; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); color: var(--bg); }
+.btn-primary:hover { opacity: .9; }
+.btn-secondary { background: var(--surface3); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--surface2); }
+.btn-danger { background: var(--red); color: white; }
+.btn-success { background: var(--green); color: var(--bg); }
+.btn-sm { padding: 6px 10px; font-size: 12px; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+/* === BADGE === */
+.badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--mono); }
+.badge-green { background: rgba(62, 207, 142, .15); color: var(--green); }
+.badge-red { background: rgba(239, 68, 68, .15); color: var(--red); }
+.badge-yellow { background: rgba(245, 166, 35, .15); color: var(--accent); }
+.badge-blue { background: rgba(96, 165, 250, .15); color: var(--blue); }
+.badge-gray { background: var(--surface3); color: var(--text2); }
+
+/* === TABLE === */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th { text-align: left; padding: 10px 14px; font-size: 11px; color: var(--text3); font-family: var(--mono); border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:hover { background: var(--surface2); }
+tbody td { padding: 12px 14px; font-size: 14px; vertical-align: middle; }
+tbody tr:last-child { border-bottom: none; }
+
+/* === FORM === */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; font-family: var(--mono); }
+.form-control { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--sans); font-size: 14px; outline: none; transition: border-color .15s; }
+.form-control:focus { border-color: var(--accent); }
+select.form-control { cursor: pointer; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* === MODAL === */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 16px; font-weight: 700; }
+.modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 20px; padding: 4px; line-height: 1; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* === POS LAYOUT === */
+.pos-layout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; height: calc(100vh - 73px); overflow: hidden; }
+.pos-menu { overflow-y: auto; }
+.pos-cart { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding-bottom: 20px; }
+.menu-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: border-color .15s, background .15s; }
+.menu-item:hover { border-color: var(--accent); background: var(--surface2); }
+.menu-item-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.menu-item-price { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--accent); }
+.menu-item-stock { font-size: 11px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+
+.cart-header { padding: 16px; border-bottom: 1px solid var(--border); }
+.cart-title { font-size: 13px; font-weight: 700; color: var(--text2); font-family: var(--mono); }
+.cart-items { flex: 1; overflow-y: auto; padding: 10px; }
+.cart-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text3); font-size: 13px; flex-direction: column; gap: 8px; }
+.cart-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--radius-sm); background: var(--surface2); margin-bottom: 8px; }
+.cart-row-name { flex: 1; font-size: 13px; font-weight: 600; }
+.cart-row-price { font-family: var(--mono); font-size: 13px; color: var(--accent); white-space: nowrap; }
+.qty-control { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface3); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; transition: background .15s; }
+.qty-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.qty-num { font-family: var(--mono); font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; }
+
+.cart-footer { padding: 16px; border-top: 1px solid var(--border); }
+.cart-summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.cart-summary-row.total { font-size: 22px; font-weight: 700; margin-top: 12px; margin-bottom: 0; font-family: var(--mono); }
+.cart-summary-row.total .total-label { font-size: 13px; font-weight: 400; color: var(--text2); font-family: var(--sans); }
+.cart-summary-row.total .total-val { color: var(--accent); }
+.cart-actions { display: flex; gap: 8px; margin-top: 14px; }
+.cart-actions .btn { flex: 1; justify-content: center; }
+
+/* === PAYMENT MODAL === */
+.payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.pay-method { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
+.pay-method:hover, .pay-method.selected { border-color: var(--accent); background: rgba(245,166,35,.08); }
+.pay-method .pay-icon { font-size: 28px; margin-bottom: 6px; }
+.pay-method .pay-name { font-size: 13px; font-weight: 600; }
+.change-display { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+.change-label { font-size: 13px; color: var(--text2); }
+.change-val { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--green); }
+
+/* === STOCK ALERT === */
+.alert { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.alert-icon { font-size: 18px; flex-shrink: 0; }
+
+/* === PAGES === */
+.page { display: none; }
+.page.active { display: flex; flex-direction: column; height: 100%; }
+.page-body { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* === RECEIPT === */
+.receipt { max-width: 320px; margin: 0 auto; background: var(--surface2); border-radius: var(--radius); padding: 24px; text-align: center; }
+.receipt-title { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.receipt-sub { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.receipt-divider { border: none; border-top: 1px dashed var(--border); margin: 16px 0; }
+.receipt-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+.receipt-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; font-family: var(--mono); margin-top: 12px; }
+.receipt-thanks { margin-top: 16px; font-size: 12px; color: var(--text3); }
+
+/* === CHART BARS === */
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; padding-top: 10px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar-fill { background: var(--accent); border-radius: 3px 3px 0 0; width: 100%; min-height: 4px; opacity: .85; transition: opacity .15s; }
+.bar-fill:hover { opacity: 1; }
+.bar-label { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+
+/* === MISC === */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-title { font-size: 16px; font-weight: 700; }
+.text-mono { font-family: var(--mono); }
+.text-muted { color: var(--text2); }
+.text-sm { font-size: 12px; }
+.text-right { text-align: right; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.gap-10 { display: flex; gap: 10px; }
+
+/* === LOADING === */
+.loading { display: flex; align-items: center; justify-content: center; height: 200px; color: var(--text3); font-family: var(--mono); font-size: 13px; flex-direction: column; gap: 12px; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--surface3); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; bottom: 30px; right: 30px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; z-index: 9999; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 32px rgba(0,0,0,.4); transition: opacity .3s, transform .3s; }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error { border-left: 3px solid var(--red); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.4 } }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-logo">
+      <div class="shop-name">🍜 หมี่ไก่ฉีก</div>
+      <div class="shop-sub">POS System v1.0</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userInitial">A</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">Admin</div>
+        <div class="user-role" id="userRole">owner</div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">หลัก</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">🏠</span> Dashboard</div>
+      <div class="nav-item" data-page="pos"><span class="nav-icon">🛒</span> ขายหน้าร้าน</div>
+      <div class="nav-item" data-page="customer-orders" style="position:relative;"><span class="nav-icon">🔔</span> ออเดอร์ลูกค้า <span id="custOrderBadge" style="display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:800;font-family:var(--mono);"></span></div>
+      <div class="nav-item" data-page="orders"><span class="nav-icon">📋</span> ประวัติออเดอร์</div>
+      <div class="nav-label">จัดการ</div>
+      <div class="nav-item" data-page="products"><span class="nav-icon">🍜</span> สินค้า / เมนู</div>
+      <div class="nav-item" data-page="inventory"><span class="nav-icon">📦</span> สต็อกวัตถุดิบ</div>
+      <div class="nav-item" data-page="finance"><span class="nav-icon">💰</span> การเงิน</div>
+      <div class="nav-label">ข้อมูล</div>
+      <div class="nav-item" data-page="reports"><span class="nav-icon">📊</span> รายงาน</div>
+      <div class="nav-item" data-page="employees"><span class="nav-icon">👥</span> พนักงาน</div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="shift-badge">
+        <div class="shift-dot"></div>
+        <div>
+          <div class="shift-info">กะปัจจุบัน</div>
+          <div class="shift-time" id="shiftTime">--:--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-right">
+        <span id="currentDateTime" class="text-mono" style="font-size:12px;color:var(--text3);"></span>
+        <button class="btn btn-ghost btn-sm" id="topLogoutBtn">ออกจากระบบ</button>
+      </div>
+    </div>
+    <div id="content">
+      <!-- DASHBOARD PAGE -->
+      <div id="page-dashboard" class="page active">
+        <div class="page-body">
+          <div id="dashboardContent"><div class="loading"><div class="spinner"></div>กำลังโหลด...</div></div>
+        </div>
+      </div>
+
+      <!-- POS PAGE -->
+      <div id="page-pos" class="page">
+        <div style="padding:0;flex:1;overflow:hidden;">
+          <div class="pos-layout" style="padding:20px;height:calc(100vh - 73px);">
+            <div class="pos-menu">
+              <div class="section-header mb-16">
+                <div class="section-title">เมนู</div>
+                <span class="text-muted text-sm text-mono" id="menuStockNote"></span>
+              </div>
+              <div class="menu-grid" id="menuGrid"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+            <div class="pos-cart">
+              <div class="cart-header">
+                <div class="cart-title">🧾 ออเดอร์ปัจจุบัน</div>
+              </div>
+              <div class="cart-items" id="cartItems">
+                <div class="cart-empty">🛒<span>ยังไม่มีสินค้า<br>คลิกเมนูเพื่อเพิ่ม</span></div>
+              </div>
+              <div class="cart-footer">
+                <div class="cart-summary-row"><span class="text-muted">รายการ</span><span class="text-mono" id="cartItemCount">0 รายการ</span></div>
+                <div class="cart-summary-row"><span class="text-muted">ส่วนลด</span><span class="text-mono" id="cartDiscount">0 ฿</span></div>
+                <div class="cart-summary-row total"><span class="total-label">ยอดรวม</span><span class="total-val" id="cartTotal">0 ฿</span></div>
+                <div class="cart-actions">
+                  <button class="btn btn-secondary" id="clearCartBtn">🗑️ ล้าง</button>
+                  <button class="btn btn-primary" id="checkoutBtn">💳 ชำระเงิน</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS PAGE -->
+      <div id="page-orders" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">ประวัติออเดอร์</div>
+            <button class="btn btn-ghost btn-sm" onclick="resetCollection('orders','ประวัติออเดอร์ทั้งหมด')">🗑️ ล้างประวัติ</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap" id="ordersTable"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER ORDERS PAGE -->
+      <div id="page-customer-orders" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">ออเดอร์จากลูกค้า</div>
+            <button class="btn btn-secondary btn-sm" id="refreshCustOrdersBtn">🔄 รีเฟรช</button>
+          </div>
+          <div id="custOrdersContent"><div class="loading"><div class="spinner"></div>กำลังโหลด...</div></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS PAGE -->
+      <div id="page-products" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">สินค้า / เมนู</div>
+            <div class="gap-10">
+              <button class="btn btn-ghost btn-sm" onclick="resetCollection('products','สินค้า/เมนู')">🗑️ รีเซ็ต</button>
+              <button class="btn btn-primary btn-sm" id="addProductBtn">+ เพิ่มสินค้า</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-wrap" id="productsTable"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVENTORY PAGE -->
+      <div id="page-inventory" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">สต็อกวัตถุดิบ</div>
+            <div class="gap-10">
+              <button class="btn btn-ghost btn-sm" onclick="resetCollection('ingredients','สต็อกวัตถุดิบ')">🗑️ รีเซ็ต</button>
+              <button class="btn btn-secondary btn-sm" id="adjustStockBtn">📝 ปรับสต็อก</button>
+              <button class="btn btn-primary btn-sm" id="stockInBtn">+ รับของเข้า</button>
+            </div>
+          </div>
+          <div id="stockAlerts" style="margin-bottom:16px;"></div>
+          <div class="card">
+            <div class="table-wrap" id="inventoryTable"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCE PAGE -->
+      <div id="page-finance" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">การเงิน</div>
+            <div class="gap-10">
+              <button class="btn btn-ghost btn-sm" onclick="resetCollection('expenses','รายจ่ายทั้งหมด')">🗑️ ล้างรายจ่าย</button>
+              <button class="btn btn-primary btn-sm" id="addExpenseBtn">+ บันทึกรายจ่าย</button>
+            </div>
+          </div>
+          <div id="financeContent"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- REPORTS PAGE -->
+      <div id="page-reports" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">รายงาน</div>
+          </div>
+          <div id="reportsContent"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- EMPLOYEES PAGE -->
+      <div id="page-employees" class="page">
+        <div class="page-body">
+          <div class="section-header mb-20">
+            <div class="section-title">พนักงาน</div>
+            <div class="gap-10">
+              <button class="btn btn-ghost btn-sm" onclick="resetCollection('employees','รายชื่อพนักงาน')">🗑️ รีเซ็ต</button>
+              <button class="btn btn-primary btn-sm" id="addEmployeeBtn">+ เพิ่มพนักงาน</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-wrap" id="employeesTable"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-backdrop" id="paymentModal" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💳 ชำระเงิน</div>
+      <button class="modal-close" id="closePaymentModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">ยอดที่ต้องชำระ</div>
+        <div style="font-size:36px;font-weight:800;font-family:var(--mono);color:var(--accent);" id="payTotalDisplay">0 ฿</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ช่องทางชำระเงิน</label>
+        <div class="payment-methods">
+          <div class="pay-method selected" data-method="cash">
+            <div class="pay-icon">💵</div>
+            <div class="pay-name">เงินสด</div>
+          </div>
+          <div class="pay-method" data-method="qr">
+            <div class="pay-icon">📱</div>
+            <div class="pay-name">QR Payment</div>
+          </div>
+        </div>
+      </div>
+      <div id="cashInputArea">
+        <div class="form-group">
+          <label class="form-label">รับเงินมา (฿)</label>
+          <input type="number" class="form-control" id="cashReceived" placeholder="0">
+        </div>
+        <div class="change-display">
+          <span class="change-label">เงินทอน</span>
+          <span class="change-val" id="changeDisplay">0 ฿</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancelPayBtn">ยกเลิก</button>
+      <button class="btn btn-success" id="confirmPayBtn">✅ ยืนยันชำระ</button>
+    </div>
+  </div>
+</div>
+
+<!-- GENERIC MODAL -->
+<div class="modal-backdrop" id="genericModal" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="genericModalTitle">Modal</div>
+      <button class="modal-close" id="closeGenericModal">✕</button>
+    </div>
+    <div class="modal-body" id="genericModalBody"></div>
+    <div class="modal-footer" id="genericModalFooter"></div>
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-backdrop" id="receiptModal" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✅ ชำระเงินสำเร็จ</div>
+    </div>
+    <div class="modal-body" id="receiptContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="closeReceiptBtn" style="width:100%;justify-content:center;">ปิดและออเดอร์ต่อไป</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" style="display:none;"></div>
+
+<script>
+// ===================== STATE =====================
+let db = null;
+let currentPage = 'dashboard';
+let cart = [];
+let selectedPayMethod = 'cash';
+let currentUser = { name: 'Admin', role: 'owner', initial: 'A' };
+let shiftStart = new Date();
+
+// ===================== SEED DATA =====================
+const SEED = {
+  products: [
+    { id: 'p1', name: 'หมี่ไก่ฉีก', price: 49, cost: 20.41, category: 'หมี่', status: 'active',
+      recipe: [{ ing: 'chicken', qty: 100, unit: 'g' }, { ing: 'noodles', qty: 80, unit: 'g' }, { ing: 'veg', qty: 20, unit: 'g' }, { ing: 'box', qty: 1, unit: 'ชิ้น' }] },
+    { id: 'p2', name: 'หมี่ไก่ฉีก + พิเศษ', price: 59, cost: 25.00, category: 'หมี่', status: 'active',
+      recipe: [{ ing: 'chicken', qty: 130, unit: 'g' }, { ing: 'noodles', qty: 80, unit: 'g' }, { ing: 'veg', qty: 20, unit: 'g' }, { ing: 'box', qty: 1, unit: 'ชิ้น' }] },
+    { id: 'p3', name: 'น้ำซุปไก่', price: 15, cost: 5.00, category: 'เครื่องดื่ม', status: 'active',
+      recipe: [{ ing: 'chicken_stock', qty: 200, unit: 'ml' }] },
+    { id: 'p4', name: 'ไข่ต้ม', price: 10, cost: 3.50, category: 'ท็อปปิ้ง', status: 'active',
+      recipe: [{ ing: 'egg', qty: 1, unit: 'ฟอง' }] },
+  ],
+  ingredients: [
+    { id: 'chicken', name: 'อกไก่', qty: 5000, unit: 'g', cost_per_unit: 0.085, min_stock: 2000, category: 'โปรตีน' },
+    { id: 'noodles', name: 'หมี่ขาว', qty: 4000, unit: 'g', cost_per_unit: 0.02, min_stock: 1500, category: 'แป้ง' },
+    { id: 'veg', name: 'ผัก', qty: 800, unit: 'g', cost_per_unit: 0.015, min_stock: 500, category: 'ผัก' },
+    { id: 'box', name: 'กล่องใส่อาหาร', qty: 60, unit: 'ชิ้น', cost_per_unit: 1.5, min_stock: 50, category: 'แพ็คเกจ' },
+    { id: 'chicken_stock', name: 'น้ำซุปไก่', qty: 5000, unit: 'ml', cost_per_unit: 0.005, min_stock: 2000, category: 'ซุป' },
+    { id: 'egg', name: 'ไข่ไก่', qty: 30, unit: 'ฟอง', cost_per_unit: 3.5, min_stock: 10, category: 'โปรตีน' },
+  ],
+  orders: [],
+  expenses: [
+    { id: 'e1', date: new Date().toISOString().split('T')[0], category: 'Gas', amount: 300, description: 'ค่าแก๊ส', by: 'Admin' },
+    { id: 'e2', date: new Date().toISOString().split('T')[0], category: 'Packaging', amount: 150, description: 'ซื้อกล่องเพิ่ม', by: 'Admin' },
+  ],
+  employees: [
+    { id: 'emp1', name: 'สมชาย ใจดี', username: 'admin', role: 'owner', status: 'active', start_date: '2024-01-01' },
+    { id: 'emp2', name: 'สมหญิง รักดี', username: 'manager01', role: 'manager', status: 'active', start_date: '2024-03-15' },
+    { id: 'emp3', name: 'ก้อย พนักงาน', username: 'staff01', role: 'staff', status: 'active', start_date: '2024-06-01' },
+  ]
+};
+
+// ===================== DB =====================
+async function initDB() {
+  try {
+    db = await claude.use('db');
+    if (!db) throw new Error('db null');
+    // Check if seeded
+    const check = await db.doc('meta/seeded').get();
+    if (!check.exists) {
+      await seedData();
+    }
+    return true;
+  } catch (e) {
+    console.warn('DB unavailable, using localStorage fallback:', e);
+    db = null;
+    // localStorage fallback
+    if (!localStorage.getItem('pos_seeded')) {
+      localStorage.setItem('pos_products', JSON.stringify(SEED.products));
+      localStorage.setItem('pos_ingredients', JSON.stringify(SEED.ingredients));
+      localStorage.setItem('pos_orders', JSON.stringify(SEED.orders));
+      localStorage.setItem('pos_expenses', JSON.stringify(SEED.expenses));
+      localStorage.setItem('pos_employees', JSON.stringify(SEED.employees));
+      localStorage.setItem('pos_seeded', '1');
+    }
+    return false;
+  }
+}
+
+async function seedData() {
+  if (!db) return;
+  const batch = [];
+  SEED.products.forEach(p => batch.push(db.doc(`products/${p.id}`).set(p)));
+  SEED.ingredients.forEach(i => batch.push(db.doc(`ingredients/${i.id}`).set(i)));
+  SEED.expenses.forEach(e => batch.push(db.doc(`expenses/${e.id}`).set(e)));
+  SEED.employees.forEach(e => batch.push(db.doc(`employees/${e.id}`).set(e)));
+  batch.push(db.doc('meta/seeded').set({ at: new Date().toISOString() }));
+  await Promise.all(batch);
+}
+
+// ===================== DATA ACCESS =====================
+async function getCollection(name) {
+  if (db) {
+    try {
+      const snap = await db.collection(name).get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) { return []; }
+  } else {
+    return JSON.parse(localStorage.getItem(`pos_${name}`) || '[]');
+  }
+}
+
+async function setDoc(col, id, data) {
+  if (db) {
+    await db.doc(`${col}/${id}`).set(data);
+  } else {
+    const arr = JSON.parse(localStorage.getItem(`pos_${col}`) || '[]');
+    const idx = arr.findIndex(x => x.id === id);
+    if (idx >= 0) arr[idx] = { id, ...data }; else arr.push({ id, ...data });
+    localStorage.setItem(`pos_${col}`, JSON.stringify(arr));
+  }
+}
+
+async function updateDoc(col, id, data) {
+  if (db) {
+    await db.doc(`${col}/${id}`).update(data);
+  } else {
+    const arr = JSON.parse(localStorage.getItem(`pos_${col}`) || '[]');
+    const idx = arr.findIndex(x => x.id === id);
+    if (idx >= 0) arr[idx] = { ...arr[idx], ...data };
+    localStorage.setItem(`pos_${col}`, JSON.stringify(arr));
+  }
+}
+
+async function deleteDoc(col, id) {
+  if (db) {
+    await db.doc(`${col}/${id}`).delete();
+  } else {
+    const arr = JSON.parse(localStorage.getItem(`pos_${col}`) || '[]').filter(x => x.id !== id);
+    localStorage.setItem(`pos_${col}`, JSON.stringify(arr));
+  }
+}
+
+// ===================== TOAST =====================
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.className = `toast ${type}`;
+  t.innerHTML = `${type === 'success' ? '✅' : '❌'} ${msg}`;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+
+// ===================== NAVIGATION =====================
+function navigate(page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${page}`)?.classList.add('active');
+  currentPage = page;
+  const titles = { dashboard: 'Dashboard', pos: 'ขายหน้าร้าน', 'customer-orders': 'ออเดอร์จากลูกค้า 🔔', orders: 'ประวัติออเดอร์', products: 'สินค้า / เมนู', inventory: 'สต็อกวัตถุดิบ', finance: 'การเงิน', reports: 'รายงาน', employees: 'พนักงาน' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  renderPage(page);
+}
+
+document.querySelectorAll('.nav-item').forEach(n => {
+  n.addEventListener('click', () => navigate(n.dataset.page));
+});
+
+// ===================== DATE/TIME =====================
+function updateClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  document.getElementById('currentDateTime').textContent = dateStr;
+  const shiftHours = Math.floor((now - shiftStart) / 3600000);
+  const shiftMins = Math.floor((now - shiftStart) % 3600000 / 60000);
+  document.getElementById('shiftTime').textContent = `${pad(shiftHours)}:${pad(shiftMins)}`;
+}
+
+// ===================== FORMAT =====================
+function fmt(n) { return Number(n||0).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+function genId(prefix) { return prefix + Date.now() + Math.floor(Math.random()*1000); }
+function today() { return new Date().toISOString().split('T')[0]; }
+
+// ===================== RENDER PAGES =====================
+async function renderPage(page) {
+  if (page === 'dashboard') await renderDashboard();
+  else if (page === 'pos') await renderPOS();
+  else if (page === 'customer-orders') await renderCustomerOrders();
+  else if (page === 'orders') await renderOrders();
+  else if (page === 'products') await renderProducts();
+  else if (page === 'inventory') await renderInventory();
+  else if (page === 'finance') await renderFinance();
+  else if (page === 'reports') await renderReports();
+  else if (page === 'employees') await renderEmployees();
+}
+
+// === DASHBOARD ===
+async function renderDashboard() {
+  const [orders, expenses, products] = await Promise.all([
+    getCollection('orders'), getCollection('expenses'), getCollection('products')
+  ]);
+  // นับทั้ง completed (Staff POS) และ paid (ออเดอร์ลูกค้าที่ชำระแล้ว)
+  const todayOrders = orders.filter(o => o.date === today() && (o.status === 'completed' || o.status === 'paid'));
+  const todayRevenue = todayOrders.reduce((s, o) => s + o.total, 0);
+  const todayCOGS = todayOrders.reduce((s, o) => s + (o.cogs || 0), 0);
+  const todayGrossProfit = todayRevenue - todayCOGS;
+  const todayExpenses = expenses.filter(e => e.date === today()).reduce((s, e) => s + e.amount, 0);
+  const todayNetProfit = todayGrossProfit - todayExpenses;
+  const totalOrders = todayOrders.length;
+  const totalUnits = todayOrders.reduce((s, o) => s + o.items.reduce((a, i) => a + i.qty, 0), 0);
+
+  // Sales by hour (last 8h)
+  const hourBuckets = {};
+  const now = new Date();
+  for (let i = 7; i >= 0; i--) {
+    const h = new Date(now - i * 3600000).getHours();
+    hourBuckets[h] = 0;
+  }
+  todayOrders.forEach(o => {
+    const h = new Date(o.created_at).getHours();
+    if (h in hourBuckets) hourBuckets[h] += o.total;
+  });
+  const maxBar = Math.max(...Object.values(hourBuckets), 1);
+
+  // Top products
+  const prodSales = {};
+  todayOrders.forEach(o => o.items.forEach(i => {
+    prodSales[i.name] = (prodSales[i.name] || 0) + i.qty;
+  }));
+  const topProds = Object.entries(prodSales).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+  document.getElementById('dashboardContent').innerHTML = `
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">ยอดขายวันนี้</div><div class="kpi-value accent">${fmt(todayRevenue)} ฿</div><div class="kpi-sub">${totalOrders} ออเดอร์</div></div>
+      <div class="kpi-card"><div class="kpi-label">จำนวนจาน</div><div class="kpi-value blue">${totalUnits}</div><div class="kpi-sub">จาน/ชิ้น วันนี้</div></div>
+      <div class="kpi-card"><div class="kpi-label">ต้นทุนสินค้า (COGS)</div><div class="kpi-value red">${fmt(todayCOGS)} ฿</div><div class="kpi-sub">รวมวัตถุดิบ</div></div>
+      <div class="kpi-card"><div class="kpi-label">กำไรขั้นต้น</div><div class="kpi-value green">${fmt(todayGrossProfit)} ฿</div><div class="kpi-sub">${todayRevenue > 0 ? fmt(todayGrossProfit/todayRevenue*100) : 0}% margin</div></div>
+      <div class="kpi-card"><div class="kpi-label">รายจ่ายวันนี้</div><div class="kpi-value" style="color:var(--accent2)">${fmt(todayExpenses)} ฿</div><div class="kpi-sub">ค่าใช้จ่ายต่างๆ</div></div>
+      <div class="kpi-card"><div class="kpi-label">กำไรสุทธิ</div><div class="kpi-value ${todayNetProfit >= 0 ? 'green' : 'red'}">${fmt(todayNetProfit)} ฿</div><div class="kpi-sub">หลังหักค่าใช้จ่าย</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="card">
+        <div class="card-title">ยอดขายรายชั่วโมง</div>
+        <div class="bar-chart">
+          ${Object.entries(hourBuckets).map(([h, v]) => `
+            <div class="bar-col">
+              <div class="bar-fill" style="height:${Math.max(v/maxBar*80,v>0?8:2)}px" title="${h}:00 — ${fmt(v)}฿"></div>
+              <div class="bar-label">${h}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">สินค้าขายดี</div>
+        ${topProds.length ? topProds.map((p,i) => `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="text-mono" style="color:var(--accent);font-size:12px;width:16px">${i+1}</span>
+            <span style="flex:1;font-size:13px">${p[0]}</span>
+            <span class="badge badge-blue">${p[1]} จาน</span>
+          </div>`).join('') : '<div style="color:var(--text3);font-size:13px;">ยังไม่มีข้อมูลวันนี้</div>'}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">ช่องทางชำระเงิน</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:8px;">
+        ${['cash','qr'].map(m => {
+          const ords = todayOrders.filter(o => o.payment_method === m);
+          const total = ords.reduce((s,o) => s+o.total, 0);
+          return `<div style="flex:1;min-width:140px;background:var(--surface2);border-radius:var(--radius-sm);padding:14px;"><div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;">${m.toUpperCase()}</div><div style="font-size:22px;font-weight:700;font-family:var(--mono)">${fmt(total)} ฿</div><div style="font-size:11px;color:var(--text3)">${ords.length} ออเดอร์</div></div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// === POS ===
+async function renderPOS() {
+  const [products, ingredients] = await Promise.all([getCollection('products'), getCollection('ingredients')]);
+  const activeProducts = products.filter(p => p.status === 'active');
+  document.getElementById('menuGrid').innerHTML = activeProducts.map(p => {
+    const ingMap = {};
+    ingredients.forEach(i => ingMap[i.id] = i);
+    const canMake = canMakeProduct(p, ingMap, 1);
+    return `
+      <div class="menu-item ${!canMake ? 'menu-item-out' : ''}" onclick="${canMake ? `addToCart('${p.id}','${p.name}',${p.price},${p.cost})` : ''}">
+        <div class="menu-item-name">${p.name}</div>
+        <div class="menu-item-price">${fmt(p.price)} ฿</div>
+        <div class="menu-item-stock">${canMake ? `ต้นทุน ${fmt(p.cost)} ฿` : '<span style="color:var(--red)">วัตถุดิบไม่พอ</span>'}</div>
+      </div>`;
+  }).join('');
+  renderCart();
+}
+
+function canMakeProduct(product, ingMap, qty) {
+  if (!product.recipe) return true;
+  return product.recipe.every(r => {
+    const ing = ingMap[r.ing];
+    return ing && ing.qty >= r.qty * qty;
+  });
+}
+
+function addToCart(id, name, price, cost) {
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ id, name, price, cost, qty: 1 });
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  if (!cart.length) {
+    el.innerHTML = '<div class="cart-empty">🛒<span>ยังไม่มีสินค้า<br>คลิกเมนูเพื่อเพิ่ม</span></div>';
+  } else {
+    el.innerHTML = cart.map((item, idx) => `
+      <div class="cart-row">
+        <div style="flex:1">
+          <div class="cart-row-name">${item.name}</div>
+          <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${fmt(item.price)} ฿/ชิ้น</div>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+        </div>
+        <div class="cart-row-price">${fmt(item.price * item.qty)} ฿</div>
+      </div>`).join('');
+  }
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cartTotal').textContent = `${fmt(total)} ฿`;
+  document.getElementById('cartItemCount').textContent = `${count} รายการ`;
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  renderCart();
+}
+
+document.getElementById('clearCartBtn').onclick = () => { cart = []; renderCart(); };
+document.getElementById('checkoutBtn').onclick = () => {
+  if (!cart.length) { showToast('กรุณาเพิ่มสินค้าก่อน', 'error'); return; }
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('payTotalDisplay').textContent = `${fmt(total)} ฿`;
+  document.getElementById('cashReceived').value = '';
+  document.getElementById('changeDisplay').textContent = '0 ฿';
+  selectedPayMethod = 'cash';
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.toggle('selected', m.dataset.method === 'cash'));
+  document.getElementById('cashInputArea').style.display = 'block';
+  document.getElementById('paymentModal').style.display = 'flex';
+};
+
+document.querySelectorAll('.pay-method').forEach(m => {
+  m.onclick = () => {
+    selectedPayMethod = m.dataset.method;
+    document.querySelectorAll('.pay-method').forEach(x => x.classList.remove('selected'));
+    m.classList.add('selected');
+    document.getElementById('cashInputArea').style.display = selectedPayMethod === 'cash' ? 'block' : 'none';
+  };
+});
+
+document.getElementById('cashReceived').oninput = () => {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+  const change = received - total;
+  document.getElementById('changeDisplay').textContent = `${fmt(Math.max(0, change))} ฿`;
+  document.getElementById('changeDisplay').style.color = change >= 0 ? 'var(--green)' : 'var(--red)';
+};
+
+document.getElementById('closePaymentModal').onclick = () => document.getElementById('paymentModal').style.display = 'none';
+document.getElementById('cancelPayBtn').onclick = () => document.getElementById('paymentModal').style.display = 'none';
+
+document.getElementById('confirmPayBtn').onclick = async () => {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const cogs = cart.reduce((s, i) => s + (i.cost || 0) * i.qty, 0);
+  if (selectedPayMethod === 'cash') {
+    const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+    if (received < total) { showToast('รับเงินมาไม่พอ!', 'error'); return; }
+  }
+  const order = {
+    id: genId('ord'), date: today(), created_at: new Date().toISOString(),
+    items: cart.map(c => ({ id: c.id, name: c.name, price: c.price, cost: c.cost, qty: c.qty })),
+    total, cogs, gross_profit: total - cogs,
+    payment_method: selectedPayMethod, status: 'completed',
+    by: currentUser.name
+  };
+  await setDoc('orders', order.id, order);
+  // Deduct stock
+  const products = await getCollection('products');
+  const ingredients = await getCollection('ingredients');
+  const ingMap = {};
+  ingredients.forEach(i => ingMap[i.id] = { ...i });
+  for (const cartItem of cart) {
+    const prod = products.find(p => p.id === cartItem.id);
+    if (prod && prod.recipe) {
+      for (const r of prod.recipe) {
+        if (ingMap[r.ing]) {
+          ingMap[r.ing].qty = Math.max(0, ingMap[r.ing].qty - r.qty * cartItem.qty);
+          await updateDoc('ingredients', r.ing, { qty: ingMap[r.ing].qty });
+        }
+      }
+    }
+  }
+  document.getElementById('paymentModal').style.display = 'none';
+  // Receipt
+  const received = selectedPayMethod === 'cash' ? parseFloat(document.getElementById('cashReceived').value) : total;
+  document.getElementById('receiptContent').innerHTML = `
+    <div class="receipt">
+      <div class="receipt-title">🍜 หมี่ไก่ฉีก</div>
+      <div class="receipt-sub">Order #${order.id.slice(-6).toUpperCase()}</div>
+      <div class="receipt-sub">${new Date().toLocaleString('th-TH')}</div>
+      <hr class="receipt-divider">
+      ${order.items.map(i => `<div class="receipt-row"><span>${i.name} × ${i.qty}</span><span class="text-mono">${fmt(i.price * i.qty)} ฿</span></div>`).join('')}
+      <hr class="receipt-divider">
+      <div class="receipt-total"><span>ยอดรวม</span><span>${fmt(total)} ฿</span></div>
+      ${selectedPayMethod === 'cash' ? `<div class="receipt-row" style="margin-top:8px;color:var(--text2)"><span>รับมา</span><span class="text-mono">${fmt(received)} ฿</span></div><div class="receipt-row" style="color:var(--green)"><span>เงินทอน</span><span class="text-mono">${fmt(received - total)} ฿</span></div>` : `<div class="receipt-row" style="margin-top:8px;color:var(--text2)"><span>ชำระด้วย</span><span>QR Payment</span></div>`}
+      <div class="receipt-thanks">ขอบคุณที่ใช้บริการ 🙏</div>
+    </div>`;
+  document.getElementById('receiptModal').style.display = 'flex';
+  cart = [];
+  renderCart();
+};
+
+document.getElementById('closeReceiptBtn').onclick = () => {
+  document.getElementById('receiptModal').style.display = 'none';
+  renderDashboard();
+};
+
+// === ORDERS ===
+async function renderOrders() {
+  const orders = await getCollection('orders');
+  const sorted = orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  document.getElementById('ordersTable').innerHTML = `
+    <table>
+      <thead><tr><th>Order ID</th><th>วันที่</th><th>เวลา</th><th>รายการ</th><th>ยอดรวม</th><th>กำไรขั้นต้น</th><th>ช่องทาง</th><th>โดย</th><th>สถานะ</th></tr></thead>
+      <tbody>
+        ${sorted.length ? sorted.map(o => `<tr>
+          <td class="text-mono" style="font-size:12px">${o.id.slice(-8).toUpperCase()}</td>
+          <td>${o.date}</td>
+          <td class="text-mono">${new Date(o.created_at).toLocaleTimeString('th-TH')}</td>
+          <td>${o.items.map(i => `${i.name} ×${i.qty}`).join(', ')}</td>
+          <td class="text-mono" style="color:var(--accent)">${fmt(o.total)} ฿</td>
+          <td class="text-mono" style="color:var(--green)">${fmt(o.gross_profit||0)} ฿</td>
+          <td><span class="badge ${o.payment_method==='qr'?'badge-blue':'badge-green'}">${o.payment_method?.toUpperCase()}</span></td>
+          <td style="color:var(--text2)">${o.by||'-'}</td>
+          <td><span class="badge badge-green">${o.status}</span></td>
+        </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:32px;">ยังไม่มีออเดอร์</td></tr>'}
+      </tbody>
+    </table>`;
+}
+
+// === PRODUCTS ===
+async function renderProducts() {
+  const products = await getCollection('products');
+  document.getElementById('productsTable').innerHTML = `
+    <table>
+      <thead><tr><th>ชื่อสินค้า</th><th>หมวดหมู่</th><th>ราคาขาย</th><th>ต้นทุน</th><th>กำไร</th><th>Margin</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+      <tbody>
+        ${products.map(p => {
+          const profit = p.price - p.cost;
+          const margin = p.price > 0 ? profit / p.price * 100 : 0;
+          return `<tr>
+            <td style="font-weight:600">${p.name}</td>
+            <td><span class="badge badge-gray">${p.category}</span></td>
+            <td class="text-mono" style="color:var(--accent)">${fmt(p.price)} ฿</td>
+            <td class="text-mono">${fmt(p.cost)} ฿</td>
+            <td class="text-mono" style="color:var(--green)">${fmt(profit)} ฿</td>
+            <td class="text-mono" style="color:${margin >= 50 ? 'var(--green)' : 'var(--accent)'}">${fmt(margin)}%</td>
+            <td><span class="badge ${p.status==='active'?'badge-green':'badge-gray'}">${p.status}</span></td>
+            <td><button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">แก้ไข</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('addProductBtn').onclick = () => openProductModal(null);
+
+async function editProduct(id) {
+  const products = await getCollection('products');
+  await openProductModal(products.find(p => p.id === id));
+}
+
+async function openProductModal(prod) {
+  const isNew = !prod;
+  // โหลด ingredients ทั้งหมดเพื่อใช้เป็น dropdown ใน recipe
+  const allIngredients = await getCollection('ingredients');
+
+  // recipe state — clone ของเดิม หรือ array ว่าง
+  let recipeRows = prod?.recipe ? prod.recipe.map(r => ({ ...r })) : [];
+
+  document.getElementById('genericModalTitle').textContent = isNew ? '🍜 เพิ่มสินค้าใหม่' : '✏️ แก้ไขสินค้า';
+
+  const renderRecipeTable = () => {
+    const tbody = document.getElementById('recipeTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = recipeRows.length === 0
+      ? `<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">ยังไม่มีวัตถุดิบ — กด + เพิ่มด้านล่าง</td></tr>`
+      : recipeRows.map((r, idx) => `
+        <tr>
+          <td>
+            <select class="form-control" id="rIng_${idx}" style="font-size:13px;padding:6px 8px;">
+              ${allIngredients.map(i => `<option value="${i.id}" ${i.id === r.ing ? 'selected' : ''}>${i.name}</option>`).join('')}
+              <option value="__custom__" ${!allIngredients.find(i=>i.id===r.ing)?'selected':''}>— กรอกเอง —</option>
+            </select>
+          </td>
+          <td><input type="number" class="form-control" id="rQty_${idx}" value="${r.qty||''}" min="0" step="any" style="font-size:13px;padding:6px 8px;" placeholder="0"></td>
+          <td><input class="form-control" id="rUnit_${idx}" value="${r.unit||''}" style="font-size:13px;padding:6px 8px;" placeholder="g / ml / ชิ้น"></td>
+          <td style="text-align:center;">
+            <button onclick="window._removeRecipeRow(${idx})" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:var(--radius-sm);padding:4px 8px;cursor:pointer;font-size:13px;">✕</button>
+          </td>
+        </tr>`).join('');
+  };
+
+  // helper: อ่านค่าจาก DOM กลับมาเป็น array
+  const readRecipeFromDOM = () => recipeRows.map((_, idx) => {
+    const ingEl  = document.getElementById(`rIng_${idx}`);
+    const qtyEl  = document.getElementById(`rQty_${idx}`);
+    const unitEl = document.getElementById(`rUnit_${idx}`);
+    return {
+      ing:  ingEl?.value  || '',
+      qty:  parseFloat(qtyEl?.value)  || 0,
+      unit: unitEl?.value || '',
+    };
+  }).filter(r => r.ing && r.ing !== '__custom__' && r.qty > 0);
+
+  document.getElementById('genericModalBody').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ชื่อสินค้า</label><input class="form-control" id="pName" value="${prod?.name||''}"></div>
+      <div class="form-group"><label class="form-label">หมวดหมู่</label><input class="form-control" id="pCat" value="${prod?.category||''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">ราคาขาย (฿)</label><input type="number" class="form-control" id="pPrice" value="${prod?.price||''}"></div>
+      <div class="form-group"><label class="form-label">ต้นทุน (฿)</label><input type="number" class="form-control" id="pCost" value="${prod?.cost||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">สถานะ</label><select class="form-control" id="pStatus"><option value="active" ${prod?.status==='active'?'selected':''}>Active</option><option value="inactive" ${prod?.status==='inactive'?'selected':''}>Inactive</option></select></div>
+
+    <div style="margin-top:4px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <label class="form-label" style="margin:0;">📋 สูตร / วัตถุดิบต่อ 1 จาน</label>
+        <button id="addRecipeRowBtn" style="background:var(--accent-dim,rgba(245,166,35,.12));border:1px solid var(--accent);color:var(--accent);border-radius:var(--radius-sm);padding:5px 12px;cursor:pointer;font-size:13px;font-weight:700;">+ เพิ่มวัตถุดิบ</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:var(--surface2);">
+              <th style="text-align:left;padding:8px 10px;color:var(--text3);font-family:var(--mono);font-size:11px;white-space:nowrap;">วัตถุดิบ</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--text3);font-family:var(--mono);font-size:11px;width:90px;">จำนวน</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--text3);font-family:var(--mono);font-size:11px;width:90px;">หน่วย</th>
+              <th style="width:40px;"></th>
+            </tr>
+          </thead>
+          <tbody id="recipeTableBody"></tbody>
+        </table>
+      </div>
+    </div>`;
+
+  // render ครั้งแรก
+  renderRecipeTable();
+
+  // expose remove fn ไว้ให้ inline onclick ใช้
+  window._removeRecipeRow = (idx) => {
+    recipeRows.splice(idx, 1);
+    recipeRows = readRecipeFromDOM(); // sync DOM → state ก่อนลบ
+    recipeRows.splice(idx, 1);
+    renderRecipeTable();
+  };
+
+  document.getElementById('addRecipeRowBtn').onclick = () => {
+    // sync DOM → state ก่อนเพิ่ม
+    recipeRows = readRecipeFromDOM();
+    const firstIng = allIngredients[0];
+    recipeRows.push({ ing: firstIng?.id || '', qty: 0, unit: firstIng?.unit || 'g' });
+    renderRecipeTable();
+  };
+
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-primary" id="saveProduct">บันทึก</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('saveProduct').onclick = async () => {
+    const recipe = readRecipeFromDOM();
+    const data = {
+      name:     document.getElementById('pName').value,
+      category: document.getElementById('pCat').value,
+      price:    parseFloat(document.getElementById('pPrice').value)||0,
+      cost:     parseFloat(document.getElementById('pCost').value)||0,
+      status:   document.getElementById('pStatus').value,
+      recipe,   // บันทึก recipe ที่แก้ไขแล้ว
+    };
+    await setDoc('products', prod?.id || genId('p'), data);
+    closeGenericModal(); renderProducts(); showToast('บันทึกสินค้าแล้ว');
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+}
+
+function closeGenericModal() { document.getElementById('genericModal').style.display = 'none'; }
+document.getElementById('closeGenericModal').onclick = closeGenericModal;
+
+// === INVENTORY ===
+async function renderInventory() {
+  const ingredients = await getCollection('ingredients');
+  const lowStock = ingredients.filter(i => i.qty <= i.min_stock);
+  document.getElementById('stockAlerts').innerHTML = lowStock.map(i => `
+    <div class="alert" style="margin-bottom:8px;">
+      <span class="alert-icon">⚠️</span>
+      <span><strong>${i.name}</strong> เหลือ ${fmt(i.qty)} ${i.unit} — ต่ำกว่า minimum (${fmt(i.min_stock)} ${i.unit})</span>
+    </div>`).join('');
+  document.getElementById('inventoryTable').innerHTML = `
+    <table>
+      <thead><tr><th>วัตถุดิบ</th><th>หมวด</th><th>คงเหลือ</th><th>หน่วย</th><th>ราคา/หน่วย</th><th>Min Stock</th><th>สถานะ</th></tr></thead>
+      <tbody>
+        ${ingredients.map(i => {
+          const status = i.qty <= 0 ? 'out' : i.qty <= i.min_stock ? 'low' : 'ok';
+          return `<tr>
+            <td style="font-weight:600">${i.name}</td>
+            <td><span class="badge badge-gray">${i.category}</span></td>
+            <td class="text-mono" style="color:${status==='ok'?'var(--text)':status==='low'?'var(--accent)':'var(--red)'}">${fmt(i.qty)}</td>
+            <td style="color:var(--text2)">${i.unit}</td>
+            <td class="text-mono">${fmt(i.cost_per_unit)} ฿</td>
+            <td class="text-mono" style="color:var(--text3)">${fmt(i.min_stock)}</td>
+            <td><span class="badge ${status==='ok'?'badge-green':status==='low'?'badge-yellow':'badge-red'}">${status==='ok'?'ปกติ':status==='low'?'ใกล้หมด':'หมดแล้ว'}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('stockInBtn').onclick = async () => {
+  const ingredients = await getCollection('ingredients');
+  document.getElementById('genericModalTitle').textContent = '📦 รับวัตถุดิบเข้า';
+  document.getElementById('genericModalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">วัตถุดิบ</label>
+      <select class="form-control" id="siIng">${ingredients.map(i => `<option value="${i.id}">${i.name} (เหลือ ${fmt(i.qty)} ${i.unit})</option>`).join('')}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">จำนวนที่รับ</label><input type="number" class="form-control" id="siQty" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">ราคาต่อหน่วย (฿)</label><input type="number" class="form-control" id="siCost" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">ผู้รับของ</label><input class="form-control" id="siBy" value="${currentUser.name}"></div>`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-primary" id="saveStockIn">บันทึกรับของ</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('saveStockIn').onclick = async () => {
+    const ingId = document.getElementById('siIng').value;
+    const qty = parseFloat(document.getElementById('siQty').value) || 0;
+    const cost = parseFloat(document.getElementById('siCost').value) || 0;
+    const ing = ingredients.find(i => i.id === ingId);
+    if (!ing || qty <= 0) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+    await updateDoc('ingredients', ingId, { qty: (ing.qty || 0) + qty, cost_per_unit: cost || ing.cost_per_unit });
+    closeGenericModal(); renderInventory(); showToast(`รับ ${qty} ${ing.unit} ${ing.name} เข้าสต็อกแล้ว`);
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+};
+
+document.getElementById('adjustStockBtn').onclick = async () => {
+  const ingredients = await getCollection('ingredients');
+  document.getElementById('genericModalTitle').textContent = '📝 ปรับสต็อก';
+  document.getElementById('genericModalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">วัตถุดิบ</label>
+      <select class="form-control" id="adjIng">${ingredients.map(i => `<option value="${i.id}">${i.name} (${fmt(i.qty)} ${i.unit})</option>`).join('')}</select></div>
+    <div class="form-group"><label class="form-label">จำนวนจริง (ตามนับจริง)</label><input type="number" class="form-control" id="adjQty" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">เหตุผล</label><input class="form-control" id="adjReason" placeholder="เช่น น้ำหนักคลาดเคลื่อน"></div>`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-primary" id="saveAdj">บันทึกปรับสต็อก</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('saveAdj').onclick = async () => {
+    const ingId = document.getElementById('adjIng').value;
+    const qty = parseFloat(document.getElementById('adjQty').value);
+    if (isNaN(qty)) { showToast('กรุณากรอกจำนวน', 'error'); return; }
+    await updateDoc('ingredients', ingId, { qty });
+    closeGenericModal(); renderInventory(); showToast('ปรับสต็อกแล้ว');
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+};
+
+// === FINANCE ===
+async function renderFinance() {
+  const [orders, expenses] = await Promise.all([getCollection('orders'), getCollection('expenses')]);
+  const todayOrders = orders.filter(o => o.date === today() && o.status === 'completed');
+  const revenue = todayOrders.reduce((s, o) => s + o.total, 0);
+  const cogs = todayOrders.reduce((s, o) => s + (o.cogs || 0), 0);
+  const totalExp = expenses.filter(e => e.date === today()).reduce((s, e) => s + e.amount, 0);
+  const net = revenue - cogs - totalExp;
+  document.getElementById('financeContent').innerHTML = `
+    <div class="kpi-grid" style="margin-bottom:20px;">
+      <div class="kpi-card"><div class="kpi-label">รายรับวันนี้</div><div class="kpi-value green">${fmt(revenue)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">COGS</div><div class="kpi-value red">${fmt(cogs)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">ค่าใช้จ่าย</div><div class="kpi-value" style="color:var(--accent2)">${fmt(totalExp)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">กำไรสุทธิ</div><div class="kpi-value ${net>=0?'green':'red'}">${fmt(net)} ฿</div></div>
+    </div>
+    <div class="card">
+      <div class="section-header mb-16"><div class="card-title" style="margin:0">รายจ่าย</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>วันที่</th><th>หมวด</th><th>จำนวน</th><th>รายละเอียด</th><th>บันทึกโดย</th></tr></thead>
+          <tbody>
+            ${expenses.sort((a,b)=>b.date.localeCompare(a.date)).map(e => `<tr>
+              <td>${e.date}</td>
+              <td><span class="badge badge-gray">${e.category}</span></td>
+              <td class="text-mono" style="color:var(--red)">${fmt(e.amount)} ฿</td>
+              <td>${e.description}</td>
+              <td style="color:var(--text2)">${e.by}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+document.getElementById('addExpenseBtn').onclick = () => {
+  document.getElementById('genericModalTitle').textContent = '💸 บันทึกรายจ่าย';
+  document.getElementById('genericModalBody').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">วันที่</label><input type="date" class="form-control" id="expDate" value="${today()}"></div>
+      <div class="form-group"><label class="form-label">หมวดหมู่</label>
+        <select class="form-control" id="expCat"><option>Raw Material</option><option>Packaging</option><option>Gas</option><option>Electricity</option><option>Water</option><option>Transportation</option><option>Equipment</option><option>Marketing</option><option>Other</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">จำนวน (฿)</label><input type="number" class="form-control" id="expAmt" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">รายละเอียด</label><input class="form-control" id="expDesc" placeholder="เช่น ซื้อวัตถุดิบเพิ่ม"></div>`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-primary" id="saveExp">บันทึก</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('saveExp').onclick = async () => {
+    const data = { date: document.getElementById('expDate').value, category: document.getElementById('expCat').value, amount: parseFloat(document.getElementById('expAmt').value)||0, description: document.getElementById('expDesc').value, by: currentUser.name };
+    await setDoc('expenses', genId('exp'), data);
+    closeGenericModal(); renderFinance(); showToast('บันทึกรายจ่ายแล้ว');
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+};
+
+// === REPORTS ===
+async function renderReports() {
+  const [orders, expenses] = await Promise.all([getCollection('orders'), getCollection('expenses')]);
+  // นับทั้ง completed (Staff) และ paid (ออเดอร์ลูกค้าที่ชำระแล้ว)
+  const compOrders = orders.filter(o => o.status === 'completed' || o.status === 'paid');
+  const totalRev = compOrders.reduce((s, o) => s + o.total, 0);
+  const totalCOGS = compOrders.reduce((s, o) => s + (o.cogs || 0), 0);
+  const totalExp = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalGross = totalRev - totalCOGS;
+  const totalNet = totalGross - totalExp;
+  // Product sales
+  const prodSales = {};
+  compOrders.forEach(o => o.items.forEach(i => {
+    if (!prodSales[i.name]) prodSales[i.name] = { units: 0, revenue: 0, cogs: 0 };
+    prodSales[i.name].units += i.qty;
+    prodSales[i.name].revenue += i.price * i.qty;
+    prodSales[i.name].cogs += (i.cost || 0) * i.qty;
+  }));
+  const prodRows = Object.entries(prodSales).sort((a, b) => b[1].units - a[1].units);
+  document.getElementById('reportsContent').innerHTML = `
+    <div class="kpi-grid mb-20">
+      <div class="kpi-card"><div class="kpi-label">รายรับทั้งหมด</div><div class="kpi-value accent">${fmt(totalRev)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">COGS รวม</div><div class="kpi-value red">${fmt(totalCOGS)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">กำไรขั้นต้น</div><div class="kpi-value green">${fmt(totalGross)} ฿</div><div class="kpi-sub">${totalRev > 0 ? fmt(totalGross/totalRev*100) : 0}% margin</div></div>
+      <div class="kpi-card"><div class="kpi-label">ค่าใช้จ่ายรวม</div><div class="kpi-value" style="color:var(--accent2)">${fmt(totalExp)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">กำไรสุทธิ</div><div class="kpi-value ${totalNet>=0?'green':'red'}">${fmt(totalNet)} ฿</div></div>
+      <div class="kpi-card"><div class="kpi-label">ออเดอร์ทั้งหมด</div><div class="kpi-value blue">${compOrders.length}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">รายงานสินค้า</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>สินค้า</th><th>จำนวนขาย</th><th>รายรับ</th><th>COGS</th><th>กำไร</th><th>Margin</th></tr></thead>
+          <tbody>
+            ${prodRows.length ? prodRows.map(([name, d]) => {
+              const profit = d.revenue - d.cogs;
+              const margin = d.revenue > 0 ? profit/d.revenue*100 : 0;
+              return `<tr>
+                <td style="font-weight:600">${name}</td>
+                <td class="text-mono">${d.units} จาน</td>
+                <td class="text-mono" style="color:var(--accent)">${fmt(d.revenue)} ฿</td>
+                <td class="text-mono" style="color:var(--red)">${fmt(d.cogs)} ฿</td>
+                <td class="text-mono" style="color:var(--green)">${fmt(profit)} ฿</td>
+                <td class="text-mono">${fmt(margin)}%</td>
+              </tr>`;
+            }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">ยังไม่มีข้อมูล</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// === EMPLOYEES ===
+async function renderEmployees() {
+  const employees = await getCollection('employees');
+  document.getElementById('employeesTable').innerHTML = `
+    <table>
+      <thead><tr><th>ชื่อ</th><th>Username</th><th>Role</th><th>วันเริ่มงาน</th><th>สถานะ</th></tr></thead>
+      <tbody>
+        ${employees.map(e => `<tr>
+          <td style="font-weight:600">${e.name}</td>
+          <td class="text-mono" style="font-size:12px;color:var(--text2)">${e.username}</td>
+          <td><span class="badge ${e.role==='owner'?'badge-yellow':e.role==='manager'?'badge-blue':'badge-gray'}">${e.role}</span></td>
+          <td style="color:var(--text2)">${e.start_date}</td>
+          <td><span class="badge ${e.status==='active'?'badge-green':'badge-red'}">${e.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('addEmployeeBtn').onclick = () => {
+  document.getElementById('genericModalTitle').textContent = '👤 เพิ่มพนักงาน';
+  document.getElementById('genericModalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label><input class="form-control" id="empName" placeholder=""></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Username</label><input class="form-control" id="empUser" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Role</label><select class="form-control" id="empRole"><option>staff</option><option>manager</option><option>owner</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">วันเริ่มงาน</label><input type="date" class="form-control" id="empDate" value="${today()}"></div>`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-primary" id="saveEmp">บันทึก</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('saveEmp').onclick = async () => {
+    const data = { name: document.getElementById('empName').value, username: document.getElementById('empUser').value, role: document.getElementById('empRole').value, start_date: document.getElementById('empDate').value, status: 'active' };
+    await setDoc('employees', genId('emp'), data);
+    closeGenericModal(); renderEmployees(); showToast('เพิ่มพนักงานแล้ว');
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+};
+
+document.getElementById('topLogoutBtn').onclick = () => showToast('ออกจากระบบแล้ว');
+document.getElementById('refreshCustOrdersBtn')?.addEventListener('click', renderCustomerOrders);
+
+// ===================== CUSTOMER ORDERS =====================
+let custOrderPollInterval = null;
+
+async function renderCustomerOrders() {
+  const el = document.getElementById('custOrdersContent');
+  if (!el) return;
+
+  const [orders, ingredients] = await Promise.all([getCollection('orders'), getCollection('ingredients')]);
+
+  // กล่องคงเหลือ
+  const boxIng = ingredients.find(i => i.id === 'box');
+  const boxLeft = boxIng ? Math.floor(boxIng.qty) : '?';
+  const boxColor = boxLeft === '?' ? 'var(--text2)' : boxLeft <= 10 ? 'var(--red)' : boxLeft <= 30 ? 'var(--accent)' : 'var(--green)';
+
+  const custOrders = orders
+    .filter(o => o.source === 'customer')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const pending   = custOrders.filter(o => o.status === 'pending');
+  const preparing = custOrders.filter(o => o.status === 'preparing');
+  const completed = custOrders.filter(o => o.status === 'completed' && o.payment_status !== 'paid');
+  const paid      = custOrders.filter(o => o.status === 'paid' || o.payment_status === 'paid').slice(0, 8);
+
+  // nav badge = pending เท่านั้น
+  const badge = document.getElementById('custOrderBadge');
+  if (pending.length > 0) { badge.textContent = pending.length; badge.style.display = 'inline-block'; }
+  else { badge.style.display = 'none'; }
+
+  const payMethodLabel = (m) => m === 'qr' ? '📱 QR Payment' : m === 'cash' ? '💵 เงินสด' : '⏳ pending';
+  const statusInfo = (o) => {
+    if (o.status === 'pending')   return { color: 'var(--red)',    label: '⏳ รอรับออเดอร์' };
+    if (o.status === 'preparing') return { color: 'var(--accent)', label: '👨‍🍳 กำลังทำ' };
+    if (o.status === 'completed') return { color: 'var(--blue)',   label: '🍜 รอชำระเงิน' };
+    if (o.status === 'paid')      return { color: 'var(--green)',  label: '✅ ชำระแล้ว' };
+    return { color: 'var(--text2)', label: o.status };
+  };
+
+  const renderOrderCard = (o, showActions = true) => {
+    const { color, label } = statusInfo(o);
+    const borderColor = o.status === 'pending' ? 'rgba(239,68,68,.4)' : o.status === 'preparing' ? 'rgba(245,166,35,.3)' : o.status === 'completed' ? 'rgba(96,165,250,.3)' : 'var(--border)';
+    return `
+      <div style="background:var(--surface);border:1px solid ${borderColor};border-radius:var(--radius);padding:16px;margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+          <div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:3px;">${getTimeAgo(o.created_at)}</div>
+            <div style="font-weight:700;font-size:15px;">👤 ${o.customer_name || o.table || '?'} <span style="font-family:var(--mono);font-size:12px;color:var(--text3);">#${o.id.slice(-6).toUpperCase()}</span></div>
+            ${o.customer_faculty ? `<div style="font-size:12px;color:var(--text2);margin-top:2px;">🏫 ${o.customer_faculty} · ${o.customer_year||''}</div>` : ''}
+            ${o.customer_phone || o.phone ? `<div style="font-size:12px;color:var(--text2);margin-top:2px;">📞 ${o.customer_phone||o.phone}</div>` : ''}
+            ${o.note  ? `<div style="font-size:12px;color:var(--accent);margin-top:2px;">📝 ${o.note}</div>`  : ''}
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;font-weight:700;font-family:var(--mono);color:${color};background:${color}22;border:1px solid ${color}44;border-radius:20px;padding:3px 10px;">${label}</div>
+            <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--accent);margin-top:4px;">${fmt(o.total)} ฿</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${payMethodLabel(o.payment_method)}</div>
+          </div>
+        </div>
+        <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:${showActions?'12px':'0'}">
+          ${o.items.map(i => `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>${i.name} <span style="color:var(--text3)">×${i.qty}</span></span><span style="font-family:var(--mono);color:var(--text2)">${fmt(i.price*i.qty)} ฿</span></div>`).join('')}
+        </div>
+        ${showActions ? `
+        <div style="display:flex;gap:8px;">
+          ${o.status === 'pending' ? `
+            <button class="btn btn-secondary btn-sm" onclick="updateCustOrderStatus('${o.id}','cancelled')" style="justify-content:center;">❌ ยกเลิก</button>
+            <button class="btn btn-primary btn-sm" onclick="updateCustOrderStatus('${o.id}','preparing')" style="flex:1;justify-content:center;">👨‍🍳 รับออเดอร์ / เริ่มทำ</button>
+          ` : o.status === 'preparing' ? `
+            <button class="btn btn-success btn-sm" onclick="updateCustOrderStatus('${o.id}','completed')" style="flex:1;justify-content:center;">🍜 เสิร์ฟแล้ว</button>
+          ` : o.status === 'completed' ? `
+            <button class="btn btn-secondary btn-sm" onclick="openPaymentForOrder('${o.id}','${o.total}','${o.payment_method}')" style="flex:1;justify-content:center;border-color:var(--blue);color:var(--blue);">💳 รับชำระเงิน ${fmt(o.total)} ฿</button>
+          ` : ''}
+        </div>` : ''}
+      </div>`;
+  };
+
+  el.innerHTML = `
+    <!-- กล่องคงเหลือ -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:24px;">📦</span>
+        <div>
+          <div style="font-size:11px;color:var(--text3);font-family:var(--mono);">กล่องที่ทำได้อีก</div>
+          <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:${boxColor};">${boxLeft} กล่อง</div>
+        </div>
+      </div>
+      ${boxLeft !== '?' && boxLeft <= 30 ? `<span style="font-size:12px;color:${boxColor};background:${boxColor}22;border:1px solid ${boxColor}44;border-radius:20px;padding:4px 12px;font-weight:700;">${boxLeft <= 10 ? '⚠️ ใกล้หมดแล้ว!' : '⚡ เหลือน้อย'}</span>` : ''}
+    </div>
+
+    ${pending.length ? `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:var(--red);font-family:var(--mono);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:pulse 1.5s ease infinite;display:inline-block;"></span>
+          ออเดอร์ใหม่ รอรับ (${pending.length})
+        </div>
+        ${pending.map(o => renderOrderCard(o, true)).join('')}
+      </div>` : ''}
+
+    ${preparing.length ? `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:var(--accent);font-family:var(--mono);margin-bottom:10px;">👨‍🍳 กำลังเตรียม (${preparing.length})</div>
+        ${preparing.map(o => renderOrderCard(o, true)).join('')}
+      </div>` : ''}
+
+    ${completed.length ? `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);font-family:var(--mono);margin-bottom:10px;">💳 รอชำระเงิน (${completed.length})</div>
+        ${completed.map(o => renderOrderCard(o, true)).join('')}
+      </div>` : ''}
+
+    ${!pending.length && !preparing.length && !completed.length ? `
+      <div style="text-align:center;padding:40px 20px;color:var(--text3);">
+        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+        <div style="font-weight:700;margin-bottom:6px;">ออเดอร์ว่างแล้ว!</div>
+        <div style="font-size:13px;">ไม่มีออเดอร์รอดำเนินการ</div>
+      </div>` : ''}
+
+    ${paid.length ? `
+      <details>
+        <summary style="cursor:pointer;font-size:12px;color:var(--text3);font-family:var(--mono);padding:8px;background:var(--surface2);border-radius:var(--radius-sm);">ชำระแล้ว (${paid.length} รายการล่าสุด)</summary>
+        <div style="margin-top:8px;">${paid.map(o => renderOrderCard(o, false)).join('')}</div>
+      </details>` : ''}
+  `;
+}
+
+// ชำระเงินออเดอร์ลูกค้า
+function openPaymentForOrder(orderId, total, payMethod) {
+  document.getElementById('genericModalTitle').textContent = '💳 รับชำระเงิน';
+  const totalNum = parseFloat(total) || 0;
+  document.getElementById('genericModalBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-family:var(--mono);">ยอดที่ต้องชำระ</div>
+      <div style="font-size:36px;font-weight:800;font-family:var(--mono);color:var(--accent);">${fmt(totalNum)} ฿</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px;">ช่องทาง: ${payMethod === 'qr' ? '📱 QR Payment' : '💵 เงินสด'}</div>
+    </div>
+    ${payMethod === 'cash' ? `
+    <div class="form-group">
+      <label class="form-label">รับเงินมา (฿)</label>
+      <input type="number" class="form-control" id="cashRecvModal" placeholder="0" oninput="
+        const c = parseFloat(this.value)||0;
+        const chg = c - ${totalNum};
+        document.getElementById('changeShowModal').textContent = chg >= 0 ? fmt_modal(chg) + ' ฿' : 'ไม่พอ!';
+        document.getElementById('changeShowModal').style.color = chg >= 0 ? 'var(--green)' : 'var(--red)';
+      ">
+    </div>
+    <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;color:var(--text2);">เงินทอน</span>
+      <span id="changeShowModal" style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--green);">0 ฿</span>
+    </div>` : `
+    <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;text-align:center;color:var(--text2);font-size:13px;">
+      ✅ ลูกค้าชำระผ่าน QR Payment แล้ว<br>กดยืนยันเพื่อปิดออเดอร์
+    </div>`}`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-success" id="confirmPayOrder">✅ ยืนยันรับเงิน</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('confirmPayOrder').onclick = async () => {
+    if (payMethod === 'cash') {
+      const recv = parseFloat(document.getElementById('cashRecvModal').value) || 0;
+      if (recv < totalNum) { showToast('รับเงินมาไม่พอ!', 'error'); return; }
+    }
+    await updateCustOrderStatus(orderId, 'paid');
+    closeGenericModal();
+  };
+  // helper for inline oninput
+  window.fmt_modal = (n) => Number(n||0).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  document.getElementById('genericModal').style.display = 'flex';
+}
+
+async function updateCustOrderStatus(orderId, newStatus) {
+  try {
+    if (newStatus === 'completed') {
+      const orders = await getCollection('orders');
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        const products = await getCollection('products');
+        const ingredients = await getCollection('ingredients');
+        const ingMap = {};
+        ingredients.forEach(i => ingMap[i.id] = { ...i });
+        for (const cartItem of order.items) {
+          const prod = products.find(p => p.id === cartItem.id);
+          if (prod && prod.recipe) {
+            for (const r of prod.recipe) {
+              if (ingMap[r.ing]) {
+                ingMap[r.ing].qty = Math.max(0, ingMap[r.ing].qty - r.qty * cartItem.qty);
+                await updateDoc('ingredients', r.ing, { qty: ingMap[r.ing].qty });
+              }
+            }
+          }
+        }
+        await updateDoc('orders', orderId, { status: 'completed', date: today() });
+      }
+    } else if (newStatus === 'paid') {
+      await updateDoc('orders', orderId, { status: 'paid', payment_status: 'paid', paid_at: new Date().toISOString() });
+    } else {
+      await updateDoc('orders', orderId, { status: newStatus });
+    }
+    await renderCustomerOrders();
+    const labels = { preparing: 'รับออเดอร์แล้ว 👨‍🍳', completed: 'เสิร์ฟแล้ว 🍜', paid: 'รับเงินแล้ว ✅', cancelled: 'ยกเลิกแล้ว' };
+    showToast(labels[newStatus] || 'อัปเดตแล้ว');
+    if (currentPage === 'dashboard') await renderDashboard();
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด', 'error');
+  }
+}
+
+function getTimeAgo(isoStr) {
+  if (!isoStr) return '—';
+  const diff = (Date.now() - new Date(isoStr)) / 1000;
+  if (diff < 60) return `${Math.floor(diff)} วิที่แล้ว`;
+  if (diff < 3600) return `${Math.floor(diff/60)} นาทีที่แล้ว`;
+  return `${Math.floor(diff/3600)} ชั่วโมงที่แล้ว`;
+}
+
+// Poll for new customer orders every 8 seconds
+function startCustOrderPolling() {
+  if (custOrderPollInterval) clearInterval(custOrderPollInterval);
+  custOrderPollInterval = setInterval(async () => {
+    // Always update badge even when not on the page
+    const orders = await getCollection('orders');
+    const pendingCust = orders.filter(o => o.source === 'customer' && o.status === 'pending');
+    const badge = document.getElementById('custOrderBadge');
+    if (pendingCust.length > 0) {
+      badge.textContent = pendingCust.length;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+    // Refresh page if currently viewing it
+    if (currentPage === 'customer-orders') {
+      await renderCustomerOrders();
+    }
+  }, 8000);
+}
+
+// ===================== RESET =====================
+async function resetCollection(col, label) {
+  document.getElementById('genericModalTitle').textContent = `🗑️ รีเซ็ต ${label}`;
+  document.getElementById('genericModalBody').innerHTML = `
+    <div style="text-align:center;padding:8px 0;">
+      <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
+      <div style="font-weight:700;margin-bottom:8px;">ยืนยันลบข้อมูลทั้งหมด?</div>
+      <div style="font-size:13px;color:var(--text2);">จะลบ <strong>${label}</strong> ทั้งหมดออกจากระบบ<br>ข้อมูลที่ลบแล้วไม่สามารถกู้คืนได้</div>
+      ${col === 'ingredients' || col === 'products' ? `<div style="margin-top:12px;padding:10px;background:rgba(245,166,35,.1);border-radius:var(--radius-sm);font-size:12px;color:var(--accent);">💡 หลังรีเซ็ต จะใส่ข้อมูล default กลับให้อัตโนมัติ</div>` : ''}
+    </div>`;
+  document.getElementById('genericModalFooter').innerHTML = `
+    <button class="btn btn-secondary" id="cancelGeneric">ยกเลิก</button>
+    <button class="btn btn-danger" id="confirmReset">🗑️ ยืนยันลบ</button>`;
+  document.getElementById('cancelGeneric').onclick = closeGenericModal;
+  document.getElementById('closeGenericModal').onclick = closeGenericModal;
+  document.getElementById('confirmReset').onclick = async () => {
+    try {
+      if (db) {
+        const snap = await db.collection(col).get();
+        await Promise.all(snap.docs.map(d => d.ref.delete()));
+        // Re-seed defaults for products and ingredients
+        if (col === 'products') {
+          await Promise.all(SEED.products.map(p => db.doc(`products/${p.id}`).set(p)));
+        } else if (col === 'ingredients') {
+          await Promise.all(SEED.ingredients.map(i => db.doc(`ingredients/${i.id}`).set(i)));
+        }
+      } else {
+        if (col === 'products') localStorage.setItem('pos_products', JSON.stringify(SEED.products));
+        else if (col === 'ingredients') localStorage.setItem('pos_ingredients', JSON.stringify(SEED.ingredients));
+        else localStorage.removeItem(`pos_${col}`);
+      }
+      closeGenericModal();
+      showToast(`รีเซ็ต ${label} แล้ว`);
+      await renderPage(currentPage);
+    } catch(e) { showToast('เกิดข้อผิดพลาด', 'error'); }
+  };
+  document.getElementById('genericModal').style.display = 'flex';
+}
+
+// ===================== INIT =====================
+async function init() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  await initDB();
+  await renderDashboard();
+  startCustOrderPolling();
+}
+
+init().catch(console.error);
+</script>
+</body>
+</html>
